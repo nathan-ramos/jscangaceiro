@@ -1,17 +1,14 @@
 class Negociacoes {
-    constructor(funcAtualizaView) {
+    constructor() {
         this._negociacoes = [];
-        this._funcAtualizaView = funcAtualizaView;
         Object.freeze(this);
     }
     adiciona(negociacao) {
         this._negociacoes.push(negociacao);
-        this._funcAtualizaView(this);
     }
  
     esvazia(){
         this._negociacoes.length = 0;
-        this._funcAtualizaView(this);
     }
  
     paraArray() {
