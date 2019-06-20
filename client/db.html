@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Aprendendo IndexedD</title>
+</head>
+
+<body>
+    <script>
+
+        let connection = null;
+
+        const openRequest = indexedDB.open("jscangaceiro",3);
+
+        openRequest.onupgradeneeded = e =>{
+            console.log('Cria ou altera um banco já existente');
+       
+            connection = e.target.result;
+
+            if(connection.objectStoreNames.contains('negociacoes')){
+                connection.deleteObjectStore('negociacoes');
+            }
+            connection.createObjectStore('negociacoes',{autoIncrement: true});
+        };
+
+        openRequest.onsuccess = e=>{
+            console.log('Conexão obtida com sucesso');
+
+            connection = e.target.result;
+
+            console.log(connection);
+        };
+
+        openRequest.onerror = e =>{
+            console.log(e.target.error);
+        }
+
+        function adiciona(){
+            const negociacao = new Negociacao(new Date(),700,5);
+            const request = connection
+            .transaction(['negociacoes'],'readwrite')
+            .objectStore('negociacoes')
+            .add(negociacao)
+
+            request.onsuccess = e=>{
+                console.log('Negociacoes salva com sucesso');
+            };
+            request.onerror = e => {
+                console.log('Nçao foi possível salvar a negociação');
+            };
+        }
+
+        function listaTodos(){
+            const negociacoes = [];
+            const cursor = connection
+            .transaction(['negociacoes'],'readwrite')
+            .objectStore('negociacoes')
+            .openCursor();
+
+            cursor.onsuccess = e =>{
+
+                const atual = e.target.result;
+
+                console.log(e.target.result);
+                if(atual){
+                    negociacoes.push(atual.value);
+
+                    atual.continue();
+                }else{
+                    console.log(negociacoes);
+                }
+
+            };
+
+            cursor.onerror = e =>{
+                console.log('Error' + e.target.error.name);
+            };
+
+
+        }
+    </script>
+    <script src="app/domain/negociacao/Negociacao.js"></script>
+</body>
+
+</html>
