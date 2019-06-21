@@ -1,33 +1,43 @@
-class ProxyFactory {
+System.register([], function (_export, _context) {
+    "use strict";
 
-    static create(objeto, props, armadilha) {
+    return {
+        setters: [],
+        execute: function () {
+            class ProxyFactory {
 
-        return new Proxy(objeto, {
-            get(target, prop, receiver) {
+                static create(objeto, props, armadilha) {
 
-                if (ProxyFactory._ehFuncao(target[prop]) 
-                && props.includes(prop)) {
+                    return new Proxy(objeto, {
+                        get(target, prop, receiver) {
 
-                    return function () {
-                        target[prop].apply(target, arguments);
-                        armadilha(target);
-                    }
+                            if (ProxyFactory._ehFuncao(target[prop]) && props.includes(prop)) {
+
+                                return function () {
+                                    target[prop].apply(target, arguments);
+                                    armadilha(target);
+                                };
+                            } else {
+                                return target[prop];
+                            }
+                        },
+                        set(target, prop, value, receiver) {
+                            const updated = Reflect.set(target, prop, value);
+
+                            if (props.includes(prop)) armadilha(target);
+                            return updated;
+                        }
+                    });
                 }
-                else {
-                    return target[prop];
-                }
-            },
-            set(target,prop,value,receiver){
-                const updated = Reflect.set(target,prop,value);
 
-                if(props.includes(prop)) armadilha(target);
-                return updated;
+                static _ehFuncao(fn) {
+                    return typeof fn == typeof Function;
+                }
+
             }
-        });
-    }
 
-    static _ehFuncao(fn){
-        return typeof(fn) == typeof(Function);
-    }
-
-}
+            _export("ProxyFactory", ProxyFactory);
+        }
+    };
+});
+//# sourceMappingURL=ProxyFactory.js.map
