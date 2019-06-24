@@ -3,10 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="dist/style.css">
     <title>Negociações</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.css">
-
 </head>
 
 <body class="container">
@@ -48,12 +47,9 @@
     <div id="negociacoes"></div>
 
     </div>
-    <script src="node_modules/systemjs/dist/system.js"></script>
-    <script>
-        System.import('app/app.js')
-            .catch(err => console.log(err));
 
-    </script>
+    <script src="dist/vendor.bundle.js"></script>
+    <script src="dist/bundle.js"></script>
 </body>
 
 </html>

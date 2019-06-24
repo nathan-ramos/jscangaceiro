@@ -1,16 +1,25 @@
-import {NegociacaoController} from './controllers/NegociacaoController.js';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap-theme.css';
+import '../css/meucss.css';
+import { NegociacaoController }
+    from './controllers/NegociacaoController.js';
+import { Negociacao } 
+from './domain/negociacao/Negociacao.js';
 
 const controller = new NegociacaoController();
 
-const $ = document.querySelector.bind(document);
+const negociacao = new Negociacao(new Date(),1,350);
+const headers = new Headers();
+headers.set('Content-Type','application/json');
+const body = JSON.stringify(negociacao);
+const method = 'POST';
 
-$('.form')
-    .addEventListener('submit',
-    controller.adiciona.bind(controller));
+const config = {
+    method,
+    headers,
+    body  
+};
 
-$('#botao-apaga')
-    .addEventListener('click',
-    controller.apaga.bind(controller));
+fetch('http://localhost:8080/negociacoes',config)
+.then(()=> console.log('Dado enviado com sucesso'));
 
-$('#botao-importa').addEventListener('click',
-controller.importaNegociacoes.bind(controller));
